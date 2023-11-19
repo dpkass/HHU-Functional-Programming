@@ -1,6 +1,5 @@
 (ns repl.02-data)
 
-(comment
 ;; Especially important if we work with infinite data structures
 
 (set! *print-length* 20)
@@ -78,8 +77,10 @@
        (map (fn [e] (range 1 e)) [2 3 4]))
 
 ;; Exercise: Define mapcat using reduce
+(defn my-mapcat [f coll]
+  (reduce #(conj %1 (f %2)) [] coll))
 
-
+(my-mapcat #(range 1 %) [2 3 4])
 
 ;; what is the difference between mymap and map?
 (use 'clojure.repl)
@@ -184,10 +185,6 @@
 ;;   2. Avoid certain operations for large/infinite sequences
 ;;      - What is the last element? (last (range)) takes a while...
 ;;      - How long is the sequence? (count (range)) also takes a while...
-
-
+(last (range))
+(count (range))
 ;; ---
-
-
-  )
-
