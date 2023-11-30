@@ -34,3 +34,14 @@ sufficiently well.")
 (is-close ((newton #(* % % %) #(* 3 (* % %))) -1 1e-10) 0)    ; x^3
 (is-close ((newton #(- (* % %) 2) #(* 2 %)) 1 1e-6) (Math/sqrt 2) 1e-5) ;x^2-2
 (is-close ((newton #(Math/pow (- % 2) 2) #(* 2 (- % 2))) 20 1e-6) 2 1e-5) ; (x-2)^2
+
+
+(comment "c) Which aspects of the implementation of Newton’s method have you abstracted and
+decomplected here?")
+
+(comment "
+1. We allow any function to calculate the next point, abstracting away newton-method specifics
+2. The same goes for eps? instead of fixed diff calculation
+3. We can have any kind of input and get any kind of output (not just numbers), since we can set
+starting point, as well as transition function and stopping point at will
+")
