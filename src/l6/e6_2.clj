@@ -88,3 +88,30 @@ point function to do this.")
 (trc g)
 
 
+
+(comment "e) Write a predicate (defn path? [g start end] ...), that returns a truthy value if
+Graph g contains a path from start to end or a falsey value if there is no such path. Make sure
+that your predicate also terminates if the graph is cyclic.")
+
+; simplest (and probably intended) impl is using trc and looking if the edge is there
+; it's very inefficient of course
+
+(defn path? [g start end]
+  (> (count (filter #(= % [start end]) (:edges (trc g)))) 0))
+
+(true? (path? g :a :a))
+(true? (path? g :a :c))
+(false? (path? g :c :a))
+(false? (path? g :e :a))
+
+
+; making sure it terminates even if graph is cyclic
+
+(def h {:nodes #{:a :c :b :d},
+        :edges #{[:a :b] [:b :c]
+                 [:c :a] [:c :d]}})
+
+(true? (path? h :a :a))
+(true? (path? h :a :c))
+(true? (path? h :c :a))
+(false? (path? h :d :a))
