@@ -58,3 +58,20 @@ point function to do this.")
                        (if (= new-em em) new-em (recur new-em)))))))
 
 (tc g)
+
+
+(comment "or using the fixed point function")
+
+(defn tc [g]
+  (assoc g
+    :edges (fixedpoint
+            (fn [edges]
+              (into edges
+                    (for [[from to] edges
+                          [to-from to-to] edges
+                          :when (= to to-from)]
+                      [from to-to])))
+            (:edges g)
+            =)))
+
+(tc g)
