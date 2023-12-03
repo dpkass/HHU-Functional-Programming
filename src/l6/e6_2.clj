@@ -75,3 +75,16 @@ point function to do this.")
             =)))
 
 (tc g)
+
+
+
+(comment "d) Implement the function (defn trc [g] ...), which computes the transitive, reflexive closure.")
+
+(defn trc [g]
+  (assoc g :edges (into
+                   (:edges (tc g))
+                   (map #(vector % %) (:nodes g)))))
+
+(trc g)
+
+
