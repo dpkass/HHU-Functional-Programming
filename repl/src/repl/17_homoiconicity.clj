@@ -49,7 +49,7 @@
 ;; Additionally, we get macros:
 ;; Macros in Clojure are not text-replacement (à la C-preprocessor),
 ;; but rather source-to-source transformations
-;; that are calculcated via functions (data to data).
+;; that are calculated via functions (data to data).
 ;; Such functions can be really simple (e.g. if-not)
 ;; oder really sophisticated and involved (e.g. clojure.core.async/go).
 
@@ -78,7 +78,7 @@
      (- 5 ,,,)
      inc ,,,
      (* 2 ,,,))
-;; wird also zu
+;; becomes...
 (* 2 (inc (- 5 3)))
 
 ;; as-> assign a name to the result, which is bound in every following form to the result from the expression before
@@ -97,4 +97,4 @@
 
 
 ;; Macros allow us to write easier code (more or less DSLs),
-;; by specifiying how the DSL Code is translated into "real" Clojure code
+;; by specifying how the DSL Code is translated into "real" Clojure code
