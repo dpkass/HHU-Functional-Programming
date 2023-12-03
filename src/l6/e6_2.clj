@@ -27,3 +27,34 @@ incoming edge.")
   (into #{} (map second (:edges g))))
 
 (ran g)
+
+
+
+(comment "c) Implement a function (defn tc [g] ...), which takes a graph as a parameter and
+returns a graph describing the transitive closure of the input.
+
+Note: Consider whether you can use the fixed point function or a generalized version of a fixed
+point function to do this.")
+
+(defn to-map [edges]
+  (reduce
+   (fn [m [from to]] (assoc m from (set (conj (from m) to))))
+   {}
+   edges))
+
+(defn to-tuples [edges-map]
+  (reduce
+   (fn [edges [from to]]
+     (into edges (map #(vector from %) to)))
+   #{}
+   edges-map))
+
+(defn tc [g]
+  (assoc g :edges (to-tuples
+                   (loop [em (to-map (:edges g))]
+                     (let [new-em (into em
+                                        (for [from (dom g) to (from em)]
+                                          [from (clojure.set/union (from em) (to em))]))]
+                       (if (= new-em em) new-em (recur new-em)))))))
+
+(tc g)
