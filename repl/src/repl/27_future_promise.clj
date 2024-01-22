@@ -1,76 +1,76 @@
 (ns repl.27-future-promise)
 
-  ;; future & promise
+;; future & promise
 
 
-  ;; Future: Container for the value of a calculation
-  ;; that is performed concurrently
-  ;; Dereferencing of a future that is not yet finished
-  ;; blocks the caller
+;; Future: Container for the value of a calculation
+;; that is performed concurrently
+;; Dereferencing of a future that is not yet finished
+;; blocks the caller
 
-  (time
-   (let [result (future (do (Thread/sleep 1000) 23))]
-     @result))
+(time
+ (let [result (future (do (Thread/sleep 1000) 23))]
+   @result))
 
-  (time
-   (let [result (future (do (Thread/sleep 1000) 23))]
-     (Thread/sleep 1500)
-     @result))
-
-
-  ;; You can find out if a future has finished with 'realized?' 
-  (time
-   (let [result (future (do (Thread/sleep 1000) 23))]
-     (println "Check1:" (realized? result))
-     (Thread/sleep 1500)
-     (println "Check2:" (realized? result))))
+(time
+ (let [result (future (do (Thread/sleep 1000) 23))]
+   (Thread/sleep 1500)
+   @result))
 
 
-  ;; 'nag' asks periodically if we are there yet, but at most n times.
-  ;; (so we do not accidentally spam the console forever)
-  ;; The default is 200 times.
-  (defn nag
-    ([f] (nag f 200))
-    ([f n]
-     (if (> n 0)
-       (if (realized? f)
-         @f
-         (do (Thread/sleep 100)
-             (println :nag f)
-             (recur f (dec n))))
-       (println :stopped))))
+;; You can find out if a future has finished with 'realized?'
+(time
+ (let [result (future (do (Thread/sleep 1000) 23))]
+   (println "Check1:" (realized? result))
+   (Thread/sleep 1500)
+   (println "Check2:" (realized? result))))
 
 
-  ;; This again shows the difference in what happens depending on when
-  ;; you dereference a future
-  (let [x (future (do (Thread/sleep 2000) 42))]
-    (println "nagging")
-    (println :first-try x)
-    (nag x))
+;; 'nag' asks periodically if we are there yet, but at most n times.
+;; (so we do not accidentally spam the console forever)
+;; The default is 200 times.
+(defn nag
+  ([f] (nag f 200))
+  ([f n]
+   (if (> n 0)
+     (if (realized? f)
+       @f
+       (do (Thread/sleep 100)
+           (println :nag f)
+           (recur f (dec n))))
+     (println :stopped))))
 
-  (let [x (future (do (Thread/sleep 2000) 42))]
-    (println "nagging")
-    (println :first-try @x) ;; deref!
-    (nag x))
 
+;; This again shows the difference in what happens depending on when
+;; you dereference a future
+(let [x (future (do (Thread/sleep 2000) 42))]
+  (println "nagging")
+  (println :first-try x)
+  (nag x))
 
-
-  ;; futures go into a thread pool
-  ;; on my machine 32 futures are executed at once:
-  (time
-   (let [comp-array
-         (for [_ (range 32)] (future (do (Thread/sleep 2000) 1)))]
-     (doseq [c comp-array] @c)))
-
-  ;; Try this with some more futures
+(let [x (future (do (Thread/sleep 2000) 42))]
+  (println "nagging")
+  (println :first-try @x)                                   ;; deref!
+  (nag x))
 
 
 
-  ;; Promise is a container that is going to be filled by someone at some point.
-  ;; The caller is blocked on dereferencing until a value is delivered.
+;; futures go into a thread pool
+;; on my machine 32 futures are executed at once:
+(time
+ (let [comp-array
+       (for [_ (range 33)] (future (do (Thread/sleep 2000) 1)))]
+   (doseq [c comp-array] @c)))
 
-  (def x (promise))
+;; Try this with some more futures
+;; 33 takes 4"
 
-  (future (nag x))
-  (deliver x 10)
-  @x 
+
+;; Promise is a container that is going to be filled by someone at some point.
+;; The caller is blocked on dereferencing until a value is delivered.
+
+(def x (promise))
+
+(future (nag x))
+(deliver x 10)
+@x
